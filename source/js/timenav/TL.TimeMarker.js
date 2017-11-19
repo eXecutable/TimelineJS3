@@ -53,7 +53,8 @@ TL.TimeMarker = TL.Class.extend({
 				headline: 		"",
 				text: 			""
 			},
-			media: 				null
+			media: 				null,
+			icon:				null
 		};
 
 		// Options
@@ -262,6 +263,8 @@ TL.TimeMarker = TL.Class.extend({
 					this._el.media.src			= thumbnail_media.getImageURL();
 				}.bind(this));
 				thumbnail_media.loadMedia();
+			} else if (this.data.media.icon){
+				this._el.media				= TL.Dom.create("span", this.data.media.icon, this._el.media_container);
 			} else {
 				var media_type = TL.MediaType(this.data.media).type;
 				this._el.media				= TL.Dom.create("span", "tl-icon-" + media_type, this._el.media_container);

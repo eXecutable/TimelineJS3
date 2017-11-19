@@ -92,7 +92,8 @@
                 caption: item_data.mediacaption || '',
                 credit: item_data.mediacredit || '',
                 url: item_data.media || '',
-                thumbnail: item_data.mediathumbnail || ''
+                thumbnail: item_data.mediathumbnail || '',
+                icon: item_data.icon || ''
             },
             text: {
                 headline: item_data.headline || '',
@@ -165,7 +166,7 @@
             return extractGoogleEntryData_V1;
         } else if (typeof entry.gsx$year !== 'undefined') {
             // check rest of V3 headers
-            var headers_V3 = ['month', 'day', 'time', 'endmonth', 'endyear', 'endday', 'endtime', 'displaydate', 'headline','text','media','mediacredit','mediacaption','mediathumbnail','type','group','background'];
+            var headers_V3 = ['month', 'day', 'time', 'endmonth', 'endyear', 'endday', 'endtime', 'displaydate', 'headline','text','media','mediacredit','mediacaption','mediathumbnail','icon','type','group','background'];
             // for (var i = 0; i < headers_V3.length; i++) {
             //     if (typeof entry['gsx$' + headers_V3[i]] == 'undefined') {
             //         throw new TL.Error("invalid_data_format_err");
