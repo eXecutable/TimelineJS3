@@ -1,5 +1,5 @@
 /*
-    TimelineJS - ver. 2017-11-07-20-35-04 - 2017-11-07
+    TimelineJS - ver. 2017-11-19-18-19-49 - 2017-11-19
     Copyright (c) 2012-2016 Northwestern University
     a project of the Northwestern University Knight Lab, originally created by Zach Wise
     https://github.com/NUKnightLab/TimelineJS3
@@ -3460,7 +3460,8 @@ TL.TimelineConfig = TL.Class.extend({
                 caption: item_data.mediacaption || '',
                 credit: item_data.mediacredit || '',
                 url: item_data.media || '',
-                thumbnail: item_data.mediathumbnail || ''
+                thumbnail: item_data.mediathumbnail || '',
+                icon: item_data.icon || ''
             },
             text: {
                 headline: item_data.headline || '',
@@ -3533,7 +3534,7 @@ TL.TimelineConfig = TL.Class.extend({
             return extractGoogleEntryData_V1;
         } else if (typeof entry.gsx$year !== 'undefined') {
             // check rest of V3 headers
-            var headers_V3 = ['month', 'day', 'time', 'endmonth', 'endyear', 'endday', 'endtime', 'displaydate', 'headline','text','media','mediacredit','mediacaption','mediathumbnail','type','group','background'];
+            var headers_V3 = ['month', 'day', 'time', 'endmonth', 'endyear', 'endday', 'endtime', 'displaydate', 'headline','text','media','mediacredit','mediacaption','mediathumbnail','icon','type','group','background'];
             // for (var i = 0; i < headers_V3.length; i++) {
             //     if (typeof entry['gsx$' + headers_V3[i]] == 'undefined') {
             //         throw new TL.Error("invalid_data_format_err");
@@ -11562,7 +11563,8 @@ TL.TimeMarker = TL.Class.extend({
 				headline: 		"",
 				text: 			""
 			},
-			media: 				null
+			media: 				null,
+			icon:				null
 		};
 
 		// Options
@@ -11771,6 +11773,8 @@ TL.TimeMarker = TL.Class.extend({
 					this._el.media.src			= thumbnail_media.getImageURL();
 				}.bind(this));
 				thumbnail_media.loadMedia();
+			} else if (this.data.media.icon){
+				this._el.media				= TL.Dom.create("span", this.data.media.icon, this._el.media_container);
 			} else {
 				var media_type = TL.MediaType(this.data.media).type;
 				this._el.media				= TL.Dom.create("span", "tl-icon-" + media_type, this._el.media_container);

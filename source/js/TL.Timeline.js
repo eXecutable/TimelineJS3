@@ -148,6 +148,12 @@ TL.Timeline = TL.Class.extend({
 		// Loaded State
 		this._loaded = {storyslider:false, timenav:false};
 
+		// Hidden dictionary
+		this._hidden_dict = {};
+
+		// Unique id of dummy search no results media
+		this._dummy_unique_id = null;
+
 		// Data Object
 		this.config = null;
 
@@ -354,6 +360,126 @@ TL.Timeline = TL.Class.extend({
 		this._timenav._updateDrawTimeline(false);
 
 		this.fire("added", {unique_id: unique_id});
+
+		return unique_id;
+	},
+
+	hide: function(n){
+		if(n >= 0  && n < this.config.events.length) {
+			// If removing the current, nav to new one first
+			if(this.config.events[n].unique_id == this.current_id) {
+				if(n < this.config.events.length - 1) {
+					this.goTo(n + 1);
+				} else {
+					this.goTo(n - 1);
+				}
+			}
+
+			var event = this.config.events.splice(n, 1);
+			delete this.config.event_dict[event[0].unique_id];
+			this._storyslider.destroySlide(this.config.title ? n+1 : n);
+			this._storyslider._updateDrawSlides();
+
+			this._timenav.destroyMarker(n);
+			this._timenav._updateDrawTimeline(false);
+
+			this._hidden_dict[event[0].unique_id] = event[0];
+			this.fire("hidden", {unique_id: event[0].unique_id});
+		}
+	},
+	
+	hideId: function(id){
+		this.hide(this._getEventIndex(id));
+	},
+
+	hideText: function(text){
+		var searchRegEx = new RegExp(text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "i");
+
+		this.unhideAll();
+		
+		var i = this.config.events.length;
+		while (i--) {
+			var event = this.config.events[i];
+			var found = searchRegEx.test(event.text.headline);
+			found |= searchRegEx.test(event.text.text);
+			if(!found){
+				this._dummy_unique_id = null;
+				if(this.config.events.length == 1){
+					//last item to be removed, adding dummy not found
+					this._dummy_unique_id = this.add({
+						"media": {
+							"caption": "",
+							"credit": "",
+							"url": "",
+							"thumbnail": "",
+							"icon": ""
+						},
+						"text": {
+							"headline": "Nenhum resultado encontrado",
+							"text": ""
+						},
+						"start_date": {
+							"year": "1000",
+							"month": "1",
+							"day": "1"
+						},
+						"display_date": "&nbsp"
+					}); //TODO: unhack this
+				}
+
+				var n = this._getEventIndex(event.unique_id);
+				if(event.unique_id == this.current_id){
+
+
+					if(n < this.config.events.length - 1){
+						this.goTo(n + 1);
+					}else{
+						this.goTo(n - 1);
+					}
+				}
+
+				this.config.events.splice(n, 1);
+				delete this.config.event_dict[event.unique_id];
+				this._storyslider.destroySlide(this.config.title ? n+1 : n);
+				this._timenav.destroyMarker(n);
+				this._hidden_dict[event.unique_id] = event;
+				//this.fire("hidden", {unique_id: event.unique_id});
+			}
+		}
+		
+		this._storyslider._updateDrawSlides();
+		this._timenav._updateDrawTimeline(false);
+	},
+	
+	unhideId: function(id){
+		var event = this._hidden_dict[id];
+		if(event){
+			delete this.config.event_dict[id];
+			this.add(event);
+		}
+	},
+
+	unhideAll: function(){
+		var that = this;
+		Object.keys(this._hidden_dict).forEach(function(key) {
+			var unique_id = that.config.addEvent(that._hidden_dict[key]);
+
+			var n = that._getEventIndex(unique_id);
+			var d = that.config.events[n];
+
+			that._storyslider.createSlide(d, that.config.title ? n+1 : n);
+			that._timenav.createMarker(d, n);
+			that.fire("added", {unique_id: unique_id});
+		});
+		this._hidden_dict = {};
+		if(this._dummy_unique_id){
+			this.removeId(this._dummy_unique_id); //hide dummy
+			this._dummy_unique_id = null;
+			this.goTo(this.config.events.length - 1);
+		}
+
+		this._storyslider._updateDrawSlides();
+		this._timenav._updateDrawTimeline(false);
 	},
 
 	// Remove an event
