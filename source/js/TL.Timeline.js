@@ -393,15 +393,25 @@ TL.Timeline = TL.Class.extend({
 	},
 
 	hideText: function(text){
-		var searchRegEx = new RegExp(text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "i");
+		var searchRegEx = new RegExp(text.trim().replace(/[-[\]{}()*+?.,\\^$|#]/g, "\\$&").replace(/\s+/g,"|"), "i");
+		var developerRegEx = new RegExp(/<p>Developer:([^<]*)<\/p>|<p>Developer:.*?<a[^>]*>(.*?)<\/a><\/p>?/i);
+		var plataformasRegEx = new RegExp(/<p>Plataforma\(s\):([^<]*)<\/p>/i);
 
 		this.unhideAll();
-		
+
 		var i = this.config.events.length;
 		while (i--) {
 			var event = this.config.events[i];
 			var found = searchRegEx.test(event.text.headline);
-			found |= searchRegEx.test(event.text.text);
+			var match = developerRegEx.exec(event.text.text);
+			if(match && match.length > 2){
+				found |= searchRegEx.test(match[1]);
+				found |= searchRegEx.test(match[2]);
+			}
+			match = plataformasRegEx.exec(event.text.text);
+			if(match && match.length > 1){
+				found |= searchRegEx.test(match[1]);
+			}
 			if(!found){
 				this._dummy_unique_id = null;
 				if(this.config.events.length == 1){
