@@ -1,5 +1,5 @@
 /*
-    TimelineJS - ver. 2017-11-19-18-19-49 - 2017-11-19
+    TimelineJS - ver. 2017-12-15-16-48-40 - 2017-12-15
     Copyright (c) 2012-2016 Northwestern University
     a project of the Northwestern University Knight Lab, originally created by Zach Wise
     https://github.com/NUKnightLab/TimelineJS3
@@ -3460,8 +3460,7 @@ TL.TimelineConfig = TL.Class.extend({
                 caption: item_data.mediacaption || '',
                 credit: item_data.mediacredit || '',
                 url: item_data.media || '',
-                thumbnail: item_data.mediathumbnail || '',
-                icon: item_data.icon || ''
+                thumbnail: item_data.mediathumbnail || ''
             },
             text: {
                 headline: item_data.headline || '',
@@ -3534,7 +3533,7 @@ TL.TimelineConfig = TL.Class.extend({
             return extractGoogleEntryData_V1;
         } else if (typeof entry.gsx$year !== 'undefined') {
             // check rest of V3 headers
-            var headers_V3 = ['month', 'day', 'time', 'endmonth', 'endyear', 'endday', 'endtime', 'displaydate', 'headline','text','media','mediacredit','mediacaption','mediathumbnail','icon','type','group','background'];
+            var headers_V3 = ['month', 'day', 'time', 'endmonth', 'endyear', 'endday', 'endtime', 'displaydate', 'headline','text','media','mediacredit','mediacaption','mediathumbnail','type','group','background'];
             // for (var i = 0; i < headers_V3.length; i++) {
             //     if (typeof entry['gsx$' + headers_V3[i]] == 'undefined') {
             //         throw new TL.Error("invalid_data_format_err");
@@ -10994,6 +10993,7 @@ TL.TimeNav = TL.Class.extend({
 	/*	Groups
 	================================================== */
 	_createGroups: function() {
+		this._groups = [];
 		var group_labels = this.timescale.getGroupLabels();
 
 		if (group_labels) {
@@ -11563,8 +11563,7 @@ TL.TimeMarker = TL.Class.extend({
 				headline: 		"",
 				text: 			""
 			},
-			media: 				null,
-			icon:				null
+			media: 				null
 		};
 
 		// Options
@@ -11773,8 +11772,6 @@ TL.TimeMarker = TL.Class.extend({
 					this._el.media.src			= thumbnail_media.getImageURL();
 				}.bind(this));
 				thumbnail_media.loadMedia();
-			} else if (this.data.media.icon){
-				this._el.media				= TL.Dom.create("span", this.data.media.icon, this._el.media_container);
 			} else {
 				var media_type = TL.MediaType(this.data.media).type;
 				this._el.media				= TL.Dom.create("span", "tl-icon-" + media_type, this._el.media_container);
@@ -11791,7 +11788,7 @@ TL.TimeMarker = TL.Class.extend({
 			this._text.innerHTML		= TL.Util.unlinkify(this.data.text.headline);
 		} else if (this.data.text.text && this.data.text.text != "") {
 			this._text.innerHTML		= TL.Util.unlinkify(this.data.text.text);
-		} else if (this.data.media.caption && this.data.media.caption != "") {
+		} else if (this.data.media && this.data.media.caption && this.data.media.caption != "") {
 			this._text.innerHTML		= TL.Util.unlinkify(this.data.media.caption);
 		}
 
