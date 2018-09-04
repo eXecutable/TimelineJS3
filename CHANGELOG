@@ -1,3 +1,6 @@
+3.6.0 (2018-06-11)
+* Configure Google Analytics tracking to anonymize_ip for GDPR compliance
+
 3.5.4 (2017-12-15)
 * PR #331 fixes bug that was causing duplications of groups
 * Fix to allow missing media in JSON #565
@@ -55,7 +58,7 @@
 * PR #400 - pause Vine, DailyMotion, and Soundcloud media on slide exit (thanks @Hammman and @JustaBitDope)
 * PR #413 - French language support additions
 
-3.4.0 (2018-08-30)
+3.4.0 (2016-08-30)
 -------------------------
 * Complete (?) RTL language support, removed Urdu Unicode translation bugs
 
